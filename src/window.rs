@@ -1,6 +1,6 @@
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, CompositeTemplate};
+use gtk::{gio, glib, pango, CompositeTemplate};
 
 use glib_macros::closure_local;
 use glib::subclass::Signal;
@@ -64,15 +64,22 @@ mod imp {
 
                     let index: i32 = values[0].parse().unwrap();
                     let name = &values[1];
-                    let temperature = &values[2];
+                    let temperature = &format!("{}°C", values[2]);
 
                     if let Some(child) = grid.child_at(1, index) {
                         let label = child.dynamic_cast::<gtk::Label>();
                         label.unwrap().set_text(name);
                     } else {
-                         let label = gtk::Label::builder()
+                        let mut font_description = pango::FontDescription::new();
+                        font_description.set_weight(pango::Weight::Bold);
+
+                        let attributes = pango::AttrList::new();
+                        attributes.insert(pango::AttrFontDesc::new(&font_description));
+
+                        let label = gtk::Label::builder()
                             .label(name)
                             .halign(gtk::Align::Start)
+                            .attributes(&attributes)
                             .build();
 
                         grid.attach(&label, 1, index, 1, 1);

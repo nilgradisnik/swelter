@@ -12,4 +12,5 @@ libmedium = "0.6"
 async-timer = "0.7"
 once_cell = "1.9"
 glib-macros = "0.15"
+piet-cairo = "0.5"
 

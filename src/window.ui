@@ -15,7 +15,27 @@
       </object>
     </child>
     <child>
-      <object class="GtkGrid" id="grid">
+      <object class="GtkBox" id="content_area">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="title-label">
+            <property name="label">Hardware sensors</property>
+            <property name="margin-top">24</property>
+            <attributes>
+              <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+              <attribute name="size" value="20000"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkGrid" id="grid">
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <property name="margin-start">24</property>
+            <property name="margin-end">24</property>
+            <property name="name">main-grid</property>
+          </object>
+        </child>
       </object>
     </child>
   </template>
