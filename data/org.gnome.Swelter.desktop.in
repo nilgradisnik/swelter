@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=swelter
+Exec=swelter
+Icon=org.gnome.Swelter
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

@@ -1,0 +1,4 @@
+data/org.gnome.Swelter.desktop.in
+data/org.gnome.Swelter.appdata.xml.in
+data/org.gnome.Swelter.gschema.xml
+src/window.ui
