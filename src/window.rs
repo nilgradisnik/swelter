@@ -59,44 +59,9 @@ mod imp {
 
             obj.connect_closure(
                 SENSORS_UPDATED_SIGNAL, false,
-                closure_local!(@strong grid => move |_obj: &Self::Type, values: Vec<String>| {
-                    println!("Values: {:?}", values);
-
-                    let index: i32 = values[0].parse().unwrap();
-                    let name = &values[1];
-                    let temperature = &format!("{}°C", values[2]);
-
-                    if let Some(child) = grid.child_at(1, index) {
-                        let label = child.dynamic_cast::<gtk::Label>();
-                        label.unwrap().set_text(name);
-                    } else {
-                        let mut font_description = pango::FontDescription::new();
-                        font_description.set_weight(pango::Weight::Bold);
-
-                        let attributes = pango::AttrList::new();
-                        attributes.insert(pango::AttrFontDesc::new(&font_description));
-
-                        let label = gtk::Label::builder()
-                            .label(name)
-                            .halign(gtk::Align::Start)
-                            .attributes(&attributes)
-                            .build();
-
-                        grid.attach(&label, 1, index, 1, 1);
-                    }
-
-                    if let Some(child) = grid.child_at(2, index) {
-                        let label = child.dynamic_cast::<gtk::Label>();
-                        label.unwrap().set_text(temperature);
-                    } else {
-                        let label = gtk::Label::builder()
-                            .label(temperature)
-                            .halign(gtk::Align::Start)
-                            .build();
-
-                        grid.attach(&label, 2, index, 1, 1);
-                    }
-                }),
+                closure_local!(@strong grid => move |_obj: &Self::Type, values: Vec<String>|
+                    update_ui(&grid, values)
+                ),
             );
         }
     }
@@ -116,5 +81,43 @@ impl SwelterWindow {
     pub fn new<P: glib::IsA<gtk::Application>>(application: &P) -> Self {
         glib::Object::new(&[("application", application)])
             .expect("Failed to create SwelterWindow")
+    }
+}
+
+fn update_ui(grid: &gtk::Grid, values: Vec<String>) {
+    let index: i32 = values[0].parse().expect("Unable to parse index");
+    let sensor_name = &values[1];
+    let temperature: f32 = values[2].parse().expect("Unable to parse temperature");
+
+    update_label(&grid, 1, index, sensor_name, true);
+
+    let temperature_formatted = &format!("{}°C", temperature.round());
+
+    update_label(&grid, 2, index, temperature_formatted, false);
+}
+
+fn update_label(grid: &gtk::Grid, column: i32, row: i32, text: &String, bold: bool) {
+    if let Some(child) = grid.child_at(column, row) {
+        let label = child.dynamic_cast::<gtk::Label>();
+
+        label.expect("Unable to get label").set_text(text);
+    } else {
+        let label = gtk::Label::builder()
+            .label(text)
+            .halign(gtk::Align::Start)
+            .build();
+
+
+        if bold {
+            let mut font_description = pango::FontDescription::new();
+            font_description.set_weight(pango::Weight::Bold);
+
+            let attributes = pango::AttrList::new();
+            attributes.insert(pango::AttrFontDesc::new(&font_description));
+
+            label.set_attributes(Some(&attributes));
+        }
+
+        grid.attach(&label, column, row, 1, 1);
     }
 }

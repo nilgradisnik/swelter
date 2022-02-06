@@ -23,7 +23,7 @@
             <property name="margin-top">24</property>
             <attributes>
               <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-              <attribute name="size" value="20000"/>
+              <attribute name="size" value="16000"/>
             </attributes>
           </object>
         </child>
