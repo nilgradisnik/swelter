@@ -7,6 +7,8 @@ use glib::subclass::Signal;
 
 use once_cell::sync::Lazy;
 
+use crate::area::SwelterChartArea;
+
 pub const SENSORS_UPDATED_SIGNAL: &str = "sensors-updated";
 
 mod imp {
@@ -94,19 +96,20 @@ fn update_ui(grid: &gtk::Grid, values: Vec<String>) {
     let temperature_formatted = &format!("{}°C", temperature.round());
 
     update_label(&grid, 2, index, temperature_formatted, false);
+
+    update_chart(&grid, 3, index, temperature);
 }
 
 fn update_label(grid: &gtk::Grid, column: i32, row: i32, text: &String, bold: bool) {
     if let Some(child) = grid.child_at(column, row) {
-        let label = child.dynamic_cast::<gtk::Label>();
+        let label = child.dynamic_cast::<gtk::Label>().unwrap();
 
-        label.expect("Unable to get label").set_text(text);
+        label.set_text(text);
     } else {
         let label = gtk::Label::builder()
             .label(text)
             .halign(gtk::Align::Start)
             .build();
-
 
         if bold {
             let mut font_description = pango::FontDescription::new();
@@ -119,5 +122,19 @@ fn update_label(grid: &gtk::Grid, column: i32, row: i32, text: &String, bold: bo
         }
 
         grid.attach(&label, column, row, 1, 1);
+    }
+}
+
+fn update_chart(grid: &gtk::Grid, column: i32, row: i32, temperature: f32) {
+    if let Some(child) = grid.child_at(column, row) {
+        let area = child.dynamic_cast::<SwelterChartArea>().unwrap();
+
+        area.update_temperature(temperature);
+    } else {
+        let area = SwelterChartArea::new();
+
+        area.update_temperature(temperature);
+
+        grid.attach(&area, column, row, 40, 1);
     }
 }

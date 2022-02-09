@@ -2,11 +2,13 @@ mod application;
 mod config;
 mod window;
 mod sensors;
+mod area;
 
 use self::application::SwelterApplication;
 use self::window::SwelterWindow;
 
 use config::{GETTEXT_PACKAGE, LOCALEDIR, PKGDATADIR};
+
 use gettextrs::{bind_textdomain_codeset, bindtextdomain, textdomain};
 use gtk::gio;
 use gtk::prelude::*;
@@ -47,8 +49,8 @@ fn main() {
     );
 
     // Spawn sensor polling thread before launching running the app
-    let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.spawn(sensors::poll(sender.clone()));
+    let runtime = tokio::runtime::Runtime::new().unwrap();
+    runtime.spawn(sensors::poll(sender.clone()));
 
     // Run the application. This function will block until the application
     // exits. Upon return, we have our exit code to return to the shell. (This
