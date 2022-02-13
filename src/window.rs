@@ -91,23 +91,23 @@ fn update_ui(grid: &gtk::Grid, values: Vec<String>) {
     let sensor_name = &values[1];
     let temperature: f32 = values[2].parse().expect("Unable to parse temperature");
 
-    update_label(&grid, 1, index, sensor_name, true);
+    update_label(grid, 1, index, sensor_name.to_string(), true);
 
     let temperature_formatted = &format!("{}°C", temperature.round());
 
-    update_label(&grid, 2, index, temperature_formatted, false);
+    update_label(grid, 2, index, temperature_formatted.to_string(), false);
 
-    update_chart(&grid, 3, index, temperature);
+    update_chart(grid, 3, index, temperature);
 }
 
-fn update_label(grid: &gtk::Grid, column: i32, row: i32, text: &String, bold: bool) {
+fn update_label(grid: &gtk::Grid, column: i32, row: i32, text: String, bold: bool) {
     if let Some(child) = grid.child_at(column, row) {
         let label = child.dynamic_cast::<gtk::Label>().unwrap();
 
-        label.set_text(text);
+        label.set_text(&text);
     } else {
         let label = gtk::Label::builder()
-            .label(text)
+            .label(&text)
             .halign(gtk::Align::Start)
             .build();
 

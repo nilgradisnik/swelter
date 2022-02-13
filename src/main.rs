@@ -50,7 +50,7 @@ fn main() {
 
     // Spawn sensor polling thread before launching running the app
     let runtime = tokio::runtime::Runtime::new().unwrap();
-    runtime.spawn(sensors::poll(sender.clone()));
+    runtime.spawn(sensors::poll(sender));
 
     // Run the application. This function will block until the application
     // exits. Upon return, we have our exit code to return to the shell. (This
@@ -64,7 +64,7 @@ fn emit_sensors (app: SwelterApplication, monitors: Vec<sensors::Monitor>) {
         let mut index = 0;
 
         for monitor in monitors.iter() {
-            if monitor.sensors.len() == 0 {
+            if monitor.sensors.is_empty() {
                 continue;
             }
 

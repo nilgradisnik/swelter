@@ -10,10 +10,19 @@ use std::cell::Cell;
 mod imp {
     use super::*;
 
-    #[derive(Debug, Default)]
+    #[derive(Debug)]
     pub struct SwelterChartArea {
         pub tick: Cell<i32>,
         pub temperature: Cell<f32>,
+    }
+
+    impl Default for SwelterChartArea {
+        fn default() -> SwelterChartArea {
+            SwelterChartArea {
+                tick: Cell::new(0),
+                temperature: Cell::new(0.0),
+            }
+        }
     }
 
     #[glib::object_subclass]
@@ -36,12 +45,20 @@ mod imp {
                 println!("Tick {:?} Temp: {:?}", tick, temperature);
 
                 let context = ctx.to_owned();
+
+                // Invert coordinates and scale
                 context.set_matrix(matrix);
                 context.scale(20.0, 20.0);
+
+                // Draw background
+                context.set_source_rgb(1.0, 1.0, 1.0);
+                context.paint().expect("Unable to draw on context");
+
+                // Draw chart
                 context.set_source_rgb(1.0, 0.0, 0.0);
                 context.set_line_width(0.1);
 
-                let x = 10.0 - (tick as f32 / 10.0);
+                let x = 19.5 - (tick as f32 / 10.0);
                 let y = temperature / 100.0;
 
                 context.move_to(x.into(), 0.0);
@@ -125,4 +142,11 @@ impl SwelterChartArea {
 
         self.queue_draw();
     }
-}   
+}
+
+impl Default for SwelterChartArea {
+    fn default() -> Self {
+        SwelterChartArea::new()
+    }
+}
+
