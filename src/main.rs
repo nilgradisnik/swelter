@@ -69,15 +69,15 @@ fn emit_sensors (app: SwelterApplication, monitors: Vec<sensors::Monitor>) {
             }
 
             for sensor in monitor.sensors.iter() {
-                let mut values = Vec::new();
+                if sensor.temperature == 0.0 {
+                    continue;
+                }
 
                 index += 1;
 
                 // Populate values in a array (index, sensor_name, temperature)
                 // Example: ["6", "temp1", "37"]
-                values.push(index.to_string());
-                values.push(sensor.name.to_string());
-                values.push(sensor.temperature.to_string());
+                let values = vec![index.to_string(), sensor.name.to_string(), sensor.temperature.to_string()];
 
                 window.emit_by_name_with_values(window::SENSORS_UPDATED_SIGNAL, &[values.to_value()]);
             }

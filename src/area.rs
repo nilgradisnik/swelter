@@ -4,7 +4,7 @@ use gtk::gio;
 use gtk::glib;
 use gtk::glib::clone;
 
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 
 mod imp {
     use super::*;
@@ -53,7 +53,7 @@ mod imp {
 
                 // Draw chart
                 for (index, temperature) in temperatures.iter().enumerate() {
-                    context.set_source_rgb(1.0, 0.0, 0.0);
+                    context.set_source_rgb(0.8, 0.1, 0.1);
                     context.set_line_width(0.1);
 
                     let x = 19.5 - (index as f32 / 10.0);
